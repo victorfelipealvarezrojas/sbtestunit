@@ -3,7 +3,6 @@ package com.testing.sbtest.repository;
 import com.testing.sbtest.model.Employee;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
