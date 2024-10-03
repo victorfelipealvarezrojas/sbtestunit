@@ -47,12 +47,12 @@ public class EmployeeRepositoryTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("email@email.cl")
-                .id(2L).build();
+                .id(1L).build();
         Employee employee2 = Employee.builder()
                 .firstName("John2")
                 .lastName("Doe2")
                 .email("email2@email.cl")
-                .id(3L).build();
+                .id(2L).build();
 
         employeeRepository.save(employee);
         employeeRepository.save(employee2);
@@ -72,7 +72,7 @@ public class EmployeeRepositoryTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("email@email.cl")
-                .id(4L)
+                .id(3L)
                 .build();
         employeeRepository.save(employee);
         // when - action or the behaviour that we are going test
@@ -91,7 +91,7 @@ public class EmployeeRepositoryTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("doe@email.cl")
-                .id(1L)
+                .id(4L)
                 .build();
         employeeRepository.save(employee);
         // when - action or the behaviour that we are going test
@@ -108,16 +108,35 @@ public class EmployeeRepositoryTest {
                 .firstName("John")
                 .lastName("Doe")
                 .email("doe@email.cl")
-                .id(1L)
+                .id(5L)
                 .build();
-        employeeRepository.save(employee);
-        Employee saveEmployee = employeeRepository.findById(employee.getId()).get();
+        Employee e = employeeRepository.save(employee);
+        Employee saveEmployee = employeeRepository.findById(e.getId()).get();
         assertThat(saveEmployee.getFirstName()).isEqualTo("John");
         // when - action or the behaviour that we are going test
         saveEmployee.setFirstName("edit");
         employeeRepository.save(saveEmployee);
-        Employee updateEmployeeUpdate = employeeRepository.findById(employee.getId()).get();
+        Employee updateEmployeeUpdate = employeeRepository.findById(saveEmployee.getId()).get();
         // then - verify the output
         assertThat(updateEmployeeUpdate.getFirstName()).isEqualTo("edit");
+    }
+
+    @Test
+    @DisplayName("Junit Test employee delete")
+    public void givenEmployeeRegister_Is_Delete() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("doe@email.cl")
+                .id(6L)
+                .build();
+
+        employeeRepository.save(employee);
+        //assertThat(employeeRepository.findById(employee.getId())).isNotEmpty();
+        // when - action or the behaviour that we are going test
+        employeeRepository.deleteById(employee.getId());
+        // then - verify the output
+        assertThat(employeeRepository.findById(employee.getId())).isEmpty();
     }
 }
