@@ -15,7 +15,6 @@ import java.util.Optional;
 @DataJpaTest
 @DisplayName("Test Spring Data JPA EmployeeRepository")
 public class EmployeeRepositoryTest {
-
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -33,10 +32,8 @@ public class EmployeeRepositoryTest {
                 .lastName("Doe")
                 .email("email@email.cl")
                 .id(1L).build();
-
         // When - action or the behavior that we are going test
         Employee savedEmployee = employeeRepository.save(employee);
-
         // Then - verify the output
         assertThat(savedEmployee).isNotNull();
         assertThat(savedEmployee.getId()).isGreaterThan(0);
@@ -51,7 +48,6 @@ public class EmployeeRepositoryTest {
                 .lastName("Doe")
                 .email("email@email.cl")
                 .id(2L).build();
-
         Employee employee2 = Employee.builder()
                 .firstName("John2")
                 .lastName("Doe2")
@@ -63,14 +59,13 @@ public class EmployeeRepositoryTest {
 
         // When - action or the behavior that we are going test
         List<Employee> employeeList = employeeRepository.findAll();
-
         // Then - verify the output
         assertThat(employeeList).isNotNull();
         assertThat(employeeList.size()).isEqualTo(2);
     }
 
-    @DisplayName("JUnit test for get employee by id operation")
     @Test
+    @DisplayName("JUnit test for get employee by id operation")
     public void givenEmployeeObject_whenFindById_thenReturnEmployeeObject() {
         // given - precondition or setup
         Employee employee = Employee.builder()
@@ -80,15 +75,49 @@ public class EmployeeRepositoryTest {
                 .id(4L)
                 .build();
         employeeRepository.save(employee);
-
         // when - action or the behaviour that we are going test
         Optional<Employee> optionalEmployee = employeeRepository.findById(employee.getId());
-
         // then - verify the output
         if (optionalEmployee.isPresent()) {
             optionalEmployee.ifPresent(employeeDB -> assertThat(employeeDB).isNotNull());
         }
     }
 
+    @Test
+    @DisplayName("JUnit test for get employee by Email")
+    public void givenEmployeeObject_whenFindByEmail_thenReturnEmployeeObject() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("doe@email.cl")
+                .id(1L)
+                .build();
+        employeeRepository.save(employee);
+        // when - action or the behaviour that we are going test
+        Employee optionalEmployee = employeeRepository.findByEmail(employee.getEmail()).get();
+        // then - verify the output
+        assertThat(optionalEmployee).isNotNull();
+    }
 
+    @Test
+    @DisplayName("JUnit test for get employee update")
+    public void givenEmployeeRegister_Is_Update() {
+        // given - precondition or setup
+        Employee employee = Employee.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .email("doe@email.cl")
+                .id(1L)
+                .build();
+        employeeRepository.save(employee);
+        Employee saveEmployee = employeeRepository.findById(employee.getId()).get();
+        assertThat(saveEmployee.getFirstName()).isEqualTo("John");
+        // when - action or the behaviour that we are going test
+        saveEmployee.setFirstName("edit");
+        employeeRepository.save(saveEmployee);
+        Employee updateEmployeeUpdate = employeeRepository.findById(employee.getId()).get();
+        // then - verify the output
+        assertThat(updateEmployeeUpdate.getFirstName()).isEqualTo("edit");
+    }
 }
