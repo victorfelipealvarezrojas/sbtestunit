@@ -12,7 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 import java.util.Optional;
 
-@DataJpaTest
+@DataJpaTest // for testing JPA repositories, configure an in-memory database, and set up Spring Data JPA, Hibernate, and an embedded database
 @DisplayName("Test Spring Data JPA EmployeeRepository")
 public class EmployeeRepositoryTest {
     @Autowired
