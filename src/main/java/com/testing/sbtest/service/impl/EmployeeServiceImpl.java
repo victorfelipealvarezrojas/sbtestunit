@@ -34,9 +34,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional(readOnly = true)
     @Override
-    public Employee getEmployeeById(Long id) {
-        return this.employeeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Employee with id " + id + " not found"));
+    public Optional<Employee> getEmployeeById(Long id) {
+        return Optional.ofNullable(this.employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee with id " + id + " not found")));
     }
 
     @Transactional

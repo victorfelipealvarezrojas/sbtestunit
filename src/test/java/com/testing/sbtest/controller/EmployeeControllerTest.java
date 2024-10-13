@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.BDDMockito.given;
 
@@ -62,7 +63,7 @@ public class EmployeeControllerTest {
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception {
         // given
         given(this.employeeService.savedEmployee(ArgumentMatchers.any(Employee.class)))
-                .willAnswer((invocation) -> invocation.getArgument(0));
+                .willAnswer((invocation) -> invocation.getArgument(0)); // willAnswer retorna una function la cual es mas flexible que willReturn
 
         // when
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.post("/api/employees")
@@ -89,6 +90,103 @@ public class EmployeeControllerTest {
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()", CoreMatchers.is(2)));
+    }
+
+    @DisplayName("Test find employee by id when success")
+    @Test
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployee() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.of(employee));
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/employees/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", CoreMatchers.is(employee.getFirstName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
+    }
+
+    @DisplayName("Test find employee by invalid id when success")
+    @Test
+    public void givenInvalidEmployeeId_whenGetEmployeeById_thenReturnEmpty() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.empty());
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/employees/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
+
+    }
+
+    @DisplayName("Test update employee by id when success")
+    @Test
+    public void givenEmployeeId_whenUpdateEmployee_thenReturnUpdatedEmployee() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.of(employee));
+        given(this.employeeService.savedEmployee(ArgumentMatchers.any(Employee.class)))
+                .willAnswer((invocation) -> invocation.getArgument(0));
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.put("/api/employees/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", CoreMatchers.is(employee.getFirstName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", CoreMatchers.is(employee.getLastName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", CoreMatchers.is(employee.getEmail())));
+    }
+
+    @DisplayName("Test update employee by invalid id when success")
+    @Test
+    public void givenInvalidEmployeeId_whenUpdateEmployee_thenReturnEmpty() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.empty());
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.put("/api/employees/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
+    }
+
+    @DisplayName("Test delete employee by id when success")
+    @Test
+    public void givenEmployeeId_whenDeleteEmployee_thenReturnSuccess() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.of(employee));
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.delete("/api/employees/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
+    }
+
+    @DisplayName("Test delete employee by invalid id when success")
+    @Test
+    public void givenInvalidEmployeeId_whenDeleteEmployee_thenReturnEmpty() throws Exception {
+        // given
+        given(this.employeeService.getEmployeeById(1L)).willReturn(Optional.empty());
+        // when
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.delete("/api/employees/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content((objectMapper.writeValueAsString(employee))));
+        // then
+        response.andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").doesNotExist());
     }
 
 }

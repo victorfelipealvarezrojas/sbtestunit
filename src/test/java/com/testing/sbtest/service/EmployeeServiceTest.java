@@ -102,17 +102,6 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    @DisplayName("Test get employee by id when success")
-    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() {
-        // given
-        given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
-        // when
-        Employee employeeFound = employeeService.getEmployeeById(employee.getId());
-        // then
-        assertThat(employeeFound).isEqualTo(employee);
-    }
-
-    @Test
     @DisplayName("Test update employee when success")
     public void givenEmployeeObject_whenUpdateEmployee_thenReturnUpdatedEmployeeObject() {
         // given
@@ -137,5 +126,16 @@ public class EmployeeServiceTest {
         employeeService.deleteEmployee(employeeId);
         // then
         verify(employeeRepository, times(1)).deleteById(employeeId);
+    }
+
+    @Test
+    @DisplayName("Test get employee by id when success")
+    public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() {
+        // given
+        given(employeeRepository.findById(employee.getId())).willReturn(Optional.of(employee));
+        // when
+        Optional<Employee> employeeFound = employeeService.getEmployeeById(employee.getId());
+        // then
+        assertThat(employeeFound.get()).isEqualTo(employee);
     }
 }
