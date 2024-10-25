@@ -54,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployee(Long id) {
         Optional<Employee> employeeExist = this.employeeRepository.findById(id);
-        if (employeeExist.isPresent())
+        if (!employeeExist.isPresent())
             throw new ResourceNotFoundException("Employee with email " + employeeExist.get().getEmail() + " already exists");
         this.employeeRepository.deleteById(id);
     }

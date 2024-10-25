@@ -3,10 +3,11 @@ package com.testing.sbtest.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter
-@Getter
+
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "employees")
