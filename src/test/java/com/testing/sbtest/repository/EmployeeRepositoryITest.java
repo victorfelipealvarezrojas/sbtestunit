@@ -1,5 +1,6 @@
 package com.testing.sbtest.repository;
 
+import com.testing.sbtest.integration.AbstractContainerBaseTest;
 import com.testing.sbtest.model.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest // for testing JPA repositories, configure an in-memory database, and set up Spring Data JPA, Hibernate, and an embedded database
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // disable the replacement the H2 database to mySQL database
 @DisplayName("Test Spring Data JPA EmployeeRepository")
-public class EmployeeRepositoryITest {
+public class EmployeeRepositoryITest extends AbstractContainerBaseTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
